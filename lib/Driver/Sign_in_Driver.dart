@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'Sign_up_Driver.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'HomePageDriver.dart';
 
 
 
@@ -80,8 +81,13 @@ class _Sign_in_DriverState extends State<Sign_in_Driver> {
             ElevatedButton(
                 style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
                 onPressed: () {
-                        // Navigator.pushReplacement(context,
-                        // MaterialPageRoute(builder: (context) => const HomePage()));
+                  final auth = FirebaseAuth.instance;
+                  auth.signInWithEmailAndPassword(email: emailcontroller.text, password: passwordcontroller.text).then((value){
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => const HomePageDriver()));
+                  }).onError((error, stackTrace){
+                    print("Error ${error.toString()}");
+                  });
                 },
                 child: const Text("Sign in", style: TextStyle(color: Colors.white)),
             ),

@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'HomePageUser.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 
 class Sign_up_User extends StatefulWidget {
   const Sign_up_User({super.key});
@@ -59,12 +61,16 @@ class _Sign_up_UserState extends State<Sign_up_User> {
                       ),
                       TextFormField(
                         controller: emailcontroller,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return ('Email is required !');
-                          } else {
-                            return null;
+                        validator: (Value) {
+                          RegExp regex = RegExp(r'^[a-zA-Z0-9]+@eng\.asu\.edu\.eg$');
+                          var mailNonNullValue=Value??"";
+                          if(mailNonNullValue.isEmpty){
+                            return ("Email is required");
                           }
+                          else if(!regex.hasMatch(mailNonNullValue)){
+                            return ("You must use your faculty mail !");
+                          }
+                          return null;
                         },
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
@@ -105,8 +111,14 @@ class _Sign_up_UserState extends State<Sign_up_User> {
                   style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
                     onPressed: (){
                        if (mykey.currentState!.validate()) {
-                             Navigator.pushReplacement(context,
-                                 MaterialPageRoute(builder: (context) => const HomePageUser()));
+                         final auth = FirebaseAuth.instance;
+                         auth.createUserWithEmailAndPassword(email: emailcontroller.text, password: passwordcontroller.text).then((value){
+                           Navigator.pushReplacement(context,
+                               MaterialPageRoute(builder: (context) => const HomePageUser()));
+                         }).onError((error, stackTrace){
+                           print("Error ${error.toString()}");
+                         });
+
                        }
                     },
                     child: const Text("Sign up", style: TextStyle(color: Colors.white)),

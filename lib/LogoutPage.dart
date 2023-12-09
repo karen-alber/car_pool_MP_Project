@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:car_pool/WelcomePage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LogoutPage extends StatefulWidget {
   const LogoutPage({super.key});
@@ -22,7 +23,12 @@ class _LogoutPageState extends State<LogoutPage> {
               child: ElevatedButton(
                 style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/welcomePage');
+                  final auth = FirebaseAuth.instance;
+                  auth.signOut().then((value){
+                    Navigator.pushReplacementNamed(context, '/welcomePage');
+                  }).onError((error, stackTrace){
+                    print("Error ${error.toString()}");
+                  });
                 },
                 child: const Text("Logout", style: TextStyle(color: Colors.white)),
               ),

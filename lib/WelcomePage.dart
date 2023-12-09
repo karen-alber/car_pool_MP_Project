@@ -1,3 +1,4 @@
+import 'package:car_pool/Driver/Sign_in_Driver.dart';
 import 'package:flutter/material.dart';
 import 'User/Sign_in_User.dart';
 
@@ -30,7 +31,7 @@ class _WelcomePageState extends State<WelcomePage> {
                  const SizedBox(width: 60,),
                  ElevatedButton(
                    onPressed: (){
-                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Sign_in_User()));
+                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Sign_in_Driver()));
                      },
                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
                    child: const Text("Driver", style: TextStyle(color: Colors.white)),

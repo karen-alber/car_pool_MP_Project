@@ -80,8 +80,13 @@ class _Sign_in_UserState extends State<Sign_in_User> {
             ElevatedButton(
                 style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
                 onPressed: () {
-                        Navigator.pushReplacement(context,
+                  final auth = FirebaseAuth.instance;
+                  auth.signInWithEmailAndPassword(email: emailcontroller.text, password: passwordcontroller.text).then((value){
+                    Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const HomePageUser()));
+                  }).onError((error, stackTrace){
+                    print("Error ${error.toString()}");
+                  });
                 },
                 child: const Text("Sign in", style: TextStyle(color: Colors.white)),
             ),

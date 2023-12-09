@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'RideUsersAppliedPage.dart';
+import 'DriverRideChoicePage.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 List Rides = [
   'Mohamed@eng.asu.edu.eg\n   Gate 3 , @5:30pm\n\n Abdu-Basha to Abbaseya',
@@ -20,12 +22,12 @@ class _DriverRidesPageState extends State<DriverRidesPage> {
         child: Icon(Icons.add),
         backgroundColor: Colors.deepPurple,
         onPressed: () {
-          Navigator.pushReplacementNamed(context, '/driverAddRidePage');
+          Navigator.pushReplacementNamed(context, '/driverDriverRideChoicePage');
           },
       ),
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: const Text("My Cart", style: TextStyle(color: Colors.white)),
+        title: const Text("Rides", style: TextStyle(color: Colors.white)),
       ),
       body: ListView.builder(
           itemCount: Rides.length,

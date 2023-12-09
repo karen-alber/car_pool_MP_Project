@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'HomePageDriver.dart';
 
 
 class Sign_up_Driver extends StatefulWidget {
@@ -59,13 +60,17 @@ class _Sign_up_DriverState extends State<Sign_up_Driver> {
                       ),
                       TextFormField(
                         controller: emailcontroller,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return ('Email is required !');
-                          } else {
-                            return null;
+                         validator: (Value) {
+                           RegExp regex = RegExp(r'^[a-zA-Z0-9]+@eng\.asu\.edu\.eg$');
+                           var mailNonNullValue=Value??"";
+                          if(mailNonNullValue.isEmpty){
+                            return ("Email is required");
                           }
-                        },
+                          else if(!regex.hasMatch(mailNonNullValue)){
+                            return ("You must use your faculty mail !");
+                          }
+                          return null;
+                          },
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: 'Email',
@@ -104,10 +109,16 @@ class _Sign_up_DriverState extends State<Sign_up_Driver> {
               ElevatedButton(
                   style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
                     onPressed: (){
-                       if (mykey.currentState!.validate()) {
-                             // Navigator.pushReplacement(context,
-                             //     MaterialPageRoute(builder: (context) => const HomePage()));
-                       }
+                      if (mykey.currentState!.validate()) {
+                        final auth = FirebaseAuth.instance;
+                        auth.createUserWithEmailAndPassword(email: emailcontroller.text, password: passwordcontroller.text).then((value){
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) => const HomePageDriver()));
+                        }).onError((error, stackTrace){
+                          print("Error ${error.toString()}");
+                        });
+
+                      }
                     },
                     child: const Text("Sign up", style: TextStyle(color: Colors.white)),
               ),
