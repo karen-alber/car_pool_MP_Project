@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "811595066100",
+    "project_id": "car-pool-dfa2a",
+    "storage_bucket": "car-pool-dfa2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:811595066100:android:84402dc241a7a784a84ca1",
+        "android_client_info": {
+          "package_name": "com.example.car_pool"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCv2Z7XKVhP2T8Bs4OP1sjz3F8za0cKYH0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
