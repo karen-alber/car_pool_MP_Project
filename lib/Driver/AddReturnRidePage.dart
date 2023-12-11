@@ -14,6 +14,16 @@ class _AddReturnRidePageState extends State<AddReturnRidePage> {
   TextEditingController timecontroller = TextEditingController();
   TextEditingController endlocationcontroller = TextEditingController();
   TextEditingController namecontroller = TextEditingController();
+  TextEditingController numcontroller = TextEditingController();
+
+  bool loading = false;
+  late DatabaseReference dbRef;
+
+  @override
+  void initState(){
+    super.initState();
+    dbRef = FirebaseDatabase.instance.ref().child('Rides');
+  }
 
 
   @override
@@ -44,6 +54,24 @@ class _AddReturnRidePageState extends State<AddReturnRidePage> {
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Driver name',
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Text("Driver Mobile Number for Contact:",style: TextStyle(fontWeight: FontWeight.bold),),
+                    TextFormField(
+                      controller: numcontroller,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return ('Driver Number is required !');
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Mobile number',
                       ),
                     ),
                     const SizedBox(
@@ -112,7 +140,14 @@ class _AddReturnRidePageState extends State<AddReturnRidePage> {
                 style:
                 const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
                 onPressed: () {
-                  //Ma
+                  Map<String, String> Rides = {
+                    'drivername': namecontroller.text,
+                    'num': numcontroller.text,
+                    'to': endlocationcontroller.text,
+                    'from': gatecontroller.text,
+                    'time':timecontroller.text,
+                  };
+                  dbRef.push().set(Rides);
                   Navigator.pushReplacementNamed(context, '/driverDriverRidesPage');
                 },
                 child: const Text("Add", style: TextStyle(color: Colors.white)),

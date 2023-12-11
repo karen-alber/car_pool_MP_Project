@@ -1,41 +1,55 @@
 import 'package:flutter/material.dart';
 import 'PaymentPage.dart';
 
-List Rides = [
-  'Driver:\nMohamed@eng.asu.edu.eg\n\nRide Details:\nGate 3 , @5:30pm, 21/11/2023\n\nRoute:\nAbdu-Basha to Abbaseya',
-  'Driver:\nMohamed@eng.asu.edu.eg\n\nRide Details:\nGate 4 , @7:30am, 21/11/2023\n\nRoute:\nAbbaseya to Abdu-Basha',
-];
-var index = 0;
-
 class OrderDetailsPage extends StatefulWidget {
-  const OrderDetailsPage({super.key});
+  const OrderDetailsPage({Key? key}) : super(key: key);
+
   @override
   State<OrderDetailsPage> createState() => _OrderDetailsPageState();
 }
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
+  late Map myreceiveddata;
+
   @override
   Widget build(BuildContext context) {
+    myreceiveddata = ModalRoute.of(context)!.settings.arguments as Map;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: const Text("Ride Details", style: TextStyle(color: Colors.white)),
+        title: const Text(
+          "Order Details Page",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Text(Rides[index], style: const TextStyle(fontSize: 20),),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 20,),
+            Text('Name: ' + (myreceiveddata['Name']),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            ),
+            SizedBox(height: 20,),
+            Text('Mobile No.: ' + (myreceiveddata['Num']),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            ),
+            SizedBox(height: 20,),
+            Text('From: ' + (myreceiveddata['From']),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            ),
+            SizedBox(height: 20,),
+            Text('To: ' + (myreceiveddata['To']),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            ),
+            SizedBox(height: 20,),
+            Text('Time: ' + (myreceiveddata['Time']),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            ),
+          ],
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.deepPurple,
-          child: const Column(
-            children: [
-              Text("Pay"),
-              Icon(Icons.payment),
-            ],
-          ),
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, '/userPaymentPage');
-          }),
     );
   }
 }

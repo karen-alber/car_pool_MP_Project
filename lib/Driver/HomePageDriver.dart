@@ -42,7 +42,7 @@ class _HomePageDriverState extends State<HomePageDriver> {
             items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: 'My Rides',
+                label: 'Rides',
                 backgroundColor: Colors.deepPurple,
               ),BottomNavigationBarItem(
                 icon: Icon(Icons.logout),
