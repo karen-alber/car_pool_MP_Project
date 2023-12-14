@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddReturnRidePage extends StatefulWidget {
   const AddReturnRidePage({super.key});
@@ -18,6 +19,9 @@ class _AddReturnRidePageState extends State<AddReturnRidePage> {
 
   bool loading = false;
   late DatabaseReference dbRef;
+  late DatabaseReference dbRef1;
+  Query dbRef2 = FirebaseDatabase.instance.ref().child('Drivers');
+
 
   @override
   void initState(){
@@ -139,16 +143,32 @@ class _AddReturnRidePageState extends State<AddReturnRidePage> {
               ElevatedButton(
                 style:
                 const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
-                onPressed: () {
-                  Map<String, String> Rides = {
-                    'drivername': namecontroller.text,
-                    'num': numcontroller.text,
-                    'to': endlocationcontroller.text,
-                    'from': gatecontroller.text,
-                    'time':timecontroller.text,
-                  };
-                  dbRef.push().set(Rides);
-                  Navigator.pushReplacementNamed(context, '/driverDriverRidesPage');
+                onPressed: () async{
+                  // Fetch the snapshot from the "Drivers" node
+                  DatabaseEvent event = await dbRef2.once();
+                  // Get the snapshot from the event
+                  DataSnapshot snapshot = event.snapshot;
+
+                  final FirebaseAuth _auth = FirebaseAuth.instance;
+                  String? uemail;
+                  final User? user = _auth.currentUser;
+
+                  if (user != null) {
+                    uemail = user.email;
+                    print(uemail);
+                    // Insert the driver's name, email, and other ride details into the "Rides" node
+                    Map<String, String> ridesData = {
+                      'drivername': namecontroller.text,
+                      'email': uemail ?? '',
+                      'num': numcontroller.text,
+                      'from': gatecontroller.text,
+                      'to': endlocationcontroller.text,
+                      'time': timecontroller.text,
+                    };
+                    dbRef.push().set(ridesData);
+                  }
+
+                  Navigator.pushReplacementNamed(context, '/driverHomePageDriver');
                 },
                 child: const Text("Add", style: TextStyle(color: Colors.white)),
               ),

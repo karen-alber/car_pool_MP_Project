@@ -19,6 +19,7 @@ import 'Driver/AddGoRidePage.dart';
 import 'Driver/DriverRidesPage.dart';
 import 'Driver/DriverRideChoicePage.dart';
 import 'Driver/AddReturnRidePage.dart';
+import 'Driver/DriverMyRidesPage.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "CarPooling App",
-      home: HomePageUser(),
+      home: HomePageDriver(),
       //const WelcomePage(),
       routes: {
         '/welcomePage': (context) => const WelcomePage(),
@@ -65,6 +66,8 @@ class MyApp extends StatelessWidget {
         '/driverAddReturnRidePage': (context) => const AddReturnRidePage(),
         '/driverDriverRideChoicePage': (context) => const DriverRideChoicePage(),
         '/driverDriverRidesPage': (context) => const DriverRidesPage(),
+        '/driverDriverMyRidesPage': (context) => const DriverMyRidesPage(),
+
       },
     );
   }

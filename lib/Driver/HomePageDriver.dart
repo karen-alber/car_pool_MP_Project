@@ -1,6 +1,7 @@
 import 'package:car_pool/LogoutPage.dart';
 import 'package:flutter/material.dart';
 import 'DriverRidesPage.dart';
+import 'DriverMyRidesPage.dart';
 
 
 class HomePageDriver extends StatefulWidget {
@@ -14,6 +15,7 @@ class _HomePageDriverState extends State<HomePageDriver> {
   int _currentIndex = 0;
   final List<Widget> _screens= [
     DriverRidesPage(),
+    DriverMyRidesPage(),
     LogoutPage(),
   ];
 
@@ -43,6 +45,10 @@ class _HomePageDriverState extends State<HomePageDriver> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
                 label: 'Rides',
+                backgroundColor: Colors.deepPurple,
+              ),BottomNavigationBarItem(
+                icon: Icon(Icons.car_rental),
+                label: 'My Rides',
                 backgroundColor: Colors.deepPurple,
               ),BottomNavigationBarItem(
                 icon: Icon(Icons.logout),

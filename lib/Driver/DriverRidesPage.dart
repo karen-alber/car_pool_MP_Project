@@ -45,25 +45,6 @@ class _DriverRidesPageState extends State<DriverRidesPage> {
               'To: ' + (rides['to']?? ''),
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    reference.child(rides['key']).remove();
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.delete,
-                        color: Colors.deepPurple[700],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            )
           ],
         ),
       ),

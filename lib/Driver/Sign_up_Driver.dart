@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'HomePageDriver.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 
 
 class Sign_up_Driver extends StatefulWidget {
@@ -14,10 +16,18 @@ class Sign_up_Driver extends StatefulWidget {
 
 class _Sign_up_DriverState extends State<Sign_up_Driver> {
   GlobalKey<FormState> mykey = GlobalKey();
-  TextEditingController usernamecontroller = TextEditingController();
+  TextEditingController namecontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
   TextEditingController emailcontroller = TextEditingController();
 
+  bool loading = false;
+  late DatabaseReference dbRef;
+
+  @override
+  void initState(){
+    super.initState();
+    dbRef = FirebaseDatabase.instance.ref().child('Drivers');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +52,7 @@ class _Sign_up_DriverState extends State<Sign_up_Driver> {
                   child: Column(
                     children: [
                       TextFormField(
-                        controller: usernamecontroller,
+                        controller: namecontroller,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return ('Username is required !');
@@ -110,6 +120,12 @@ class _Sign_up_DriverState extends State<Sign_up_Driver> {
                   style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
                     onPressed: (){
                       if (mykey.currentState!.validate()) {
+                        Map<String, String> Drivers = {
+                          'name': namecontroller.text,
+                          'email': emailcontroller.text,
+                          'password': passwordcontroller.text,
+                        };
+                        dbRef.push().set(Drivers);
                         final auth = FirebaseAuth.instance;
                         auth.createUserWithEmailAndPassword(email: emailcontroller.text, password: passwordcontroller.text).then((value){
                           Navigator.pushReplacement(context,
