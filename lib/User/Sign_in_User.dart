@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'Sign_up_User.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'HomePageUser.dart';
-
 
 class Sign_in_User extends StatefulWidget {
   const Sign_in_User({super.key});
   @override
   State<Sign_in_User> createState() => _Sign_in_UserState();
 }
-
 
 class _Sign_in_UserState extends State<Sign_in_User> {
   GlobalKey<FormState> mykey = GlobalKey();
@@ -24,7 +22,7 @@ class _Sign_in_UserState extends State<Sign_in_User> {
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
         title: const Text("Sign-in Page", style: TextStyle(color: Colors.white)),
-        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: ListView(
@@ -37,58 +35,110 @@ class _Sign_in_UserState extends State<Sign_in_User> {
               height: 20,
             ),
             Form(
-                key: mykey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: emailcontroller,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return ('Email is required !');
-                        } else {
-                          return null;
-                        }
-                      },
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Email',
-                          icon: Icon(Icons.email)),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      controller: passwordcontroller,
-                      validator: (PassCurrentValue){
-                        var passNonNullValue=PassCurrentValue??"";
-                        if(passNonNullValue.isEmpty){
-                          return ("Password is required");
-                        }
+              key: mykey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: emailcontroller,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return ('Email is required !');
+                      } else {
                         return null;
-                      },
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Password',
-                          icon: Icon(Icons.lock_outline)),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                )
+                      }
+                    },
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Email',
+                        icon: Icon(Icons.email)),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: passwordcontroller,
+                    validator: (PassCurrentValue) {
+                      var passNonNullValue = PassCurrentValue ?? "";
+                      if (passNonNullValue.isEmpty) {
+                        return ("Password is required");
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Password',
+                        icon: Icon(Icons.lock_outline)),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
             ),
             ElevatedButton(
-                style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
-                onPressed: () {
-                  final auth = FirebaseAuth.instance;
-                  auth.signInWithEmailAndPassword(email: emailcontroller.text, password: passwordcontroller.text).then((value){
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => const HomePageUser()));
-                  }).onError((error, stackTrace){
-                    print("Error ${error.toString()}");
+              style: const ButtonStyle(
+                  backgroundColor:
+                  MaterialStatePropertyAll(Colors.deepPurple)),
+              onPressed: () {
+                final auth = FirebaseAuth.instance;
+                final email = emailcontroller.text;
+                final password = passwordcontroller.text;
+
+                // Attempt to sign in with email and password
+                auth.signInWithEmailAndPassword(email: email, password: password).then((value) {
+                  // Authentication successful, now check the database
+                  DatabaseReference usersReference = FirebaseDatabase.instance.ref().child('Users');
+                  usersReference
+                      .orderByChild('email')
+                      .equalTo(email)
+                      .once()
+                      .then((DatabaseEvent event) {
+                    DataSnapshot snapshot = event.snapshot;
+
+                    // Check if the snapshot value is not null and is of type Map
+                    if (snapshot.value != null && snapshot.value is Map) {
+                      // Cast the snapshot value to Map<dynamic, dynamic>
+                      Map<dynamic, dynamic> usersData = snapshot.value as Map<dynamic, dynamic>;
+
+                      bool isUserFound = false;
+
+                      // Iterate over each user to find a match for email and password
+                      usersData.forEach((key, user) {
+                        if (user is Map && user['password'] == password) {
+                          isUserFound = true;
+                        }
+                      });
+
+                      if (isUserFound) {
+                        // Email and password match found, navigate to the home page
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomePageUser()),
+                        );
+                      } else {
+                        // No matching email and password found
+                        print("Invalid email or password");
+                        showSnackBar("Invalid email or password", Colors.red);
+                      }
+                    } else {
+                      // Handle the case where the snapshot value is null or not of type Map
+                      print("Invalid data structure received from Firebase");
+                      showSnackBar("Error fetching data from the database", Colors.red);
+                    }
+                  }).onError((error, stackTrace) {
+                    // Handle errors in the database query
+                    print("Database query error: $error");
+                    showSnackBar("Error querying the database", Colors.red);
                   });
-                },
-                child: const Text("Sign in", style: TextStyle(color: Colors.white)),
+                }).onError((error, stackTrace) {
+                  // Authentication sign-in error
+                  print("Sign-in error: $error");
+                  showSnackBar("No matching email and password found", Colors.red);
+                });
+              },
+
+
+              child: const Text("Sign in", style: TextStyle(color: Colors.white)),
             ),
             signUpOption(),
             const SizedBox(
@@ -96,22 +146,36 @@ class _Sign_in_UserState extends State<Sign_in_User> {
             ),
           ],
         ),
-      )
+      ),
     );
   }
-  Row signUpOption(){
+
+  Row signUpOption() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Don't have an account?", style: TextStyle(color: Colors.purple)),
-        GestureDetector(onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const Sign_up_User()));
-        },
-        child: const Text("Sign Up", style: TextStyle(color: Colors.deepPurple,fontWeight: FontWeight.bold),
-        ),
+        const Text("Don't have an account?",
+            style: TextStyle(color: Colors.purple)),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Sign_up_User()));
+          },
+          child: const Text("Sign Up",
+              style: TextStyle(
+                  color: Colors.deepPurple, fontWeight: FontWeight.bold)),
         )
       ],
     );
   }
 
+  // Add this function to show a snackbar message
+  void showSnackBar(String message, Color backgroundColor) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
 }

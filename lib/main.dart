@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "CarPooling App",
-      home: HomePageDriver(),
+      home: WelcomePage(),
       //const WelcomePage(),
       routes: {
         '/welcomePage': (context) => const WelcomePage(),
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         '/userHistoryPage': (context) => const HistoryPage(),
         '/userOrderDetailsPage': (context) =>  const OrderDetailsPage(),
         '/userPaymentPage': (context) => const PaymentPage(),
-        '/userOrderTrackingPage': (context) => const OrderTrackingPage(),
+        //'/userOrderTrackingPage': (context) => const OrderTrackingPage(),
         '/userSign_in_User': (context) => const Sign_in_User(),
         '/userSign_up_User': (context) => const Sign_up_User(),
         '/userProfile': (context) => const ProfilePage(),
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
         '/driverHomePageDriver': (context) => const HomePageDriver(),
         '/driverSign_up_Driver': (context) => const Sign_up_Driver(),
         '/driverSign_in_Driver': (context) => const Sign_in_Driver(),
-        '/driverRideUsersAppliedPage': (context) =>  const RideUsersAppliedPage(),
+        //'/driverRideUsersAppliedPage': (context) =>  const RideUsersAppliedPage(),
         '/driverAddGoRidePage': (context) => const AddGoRidePage(),
         '/driverAddReturnRidePage': (context) => const AddReturnRidePage(),
         '/driverDriverRideChoicePage': (context) => const DriverRideChoicePage(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'OrderDetailsPage.dart';
 import 'MyCartPage.dart';
 import 'ProfilePage.dart';
@@ -15,13 +16,18 @@ class AvailableRidesPage extends StatefulWidget {
 
 class _AvailableRidesPageState extends State<AvailableRidesPage> {
   Query dbRef = FirebaseDatabase.instance.ref().child('Rides');
-
+  DatabaseReference ridesreference = FirebaseDatabase.instance.ref().child('Rides');
+  Query usersreference = FirebaseDatabase.instance.ref().child('Users');
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool loading = false;
+  String? uemail;
   late DatabaseReference dbRef1;
+
+
   @override
   void initState(){
     super.initState();
-    dbRef1 = FirebaseDatabase.instance.ref().child('Cart');
+    dbRef1 = FirebaseDatabase.instance.ref().child('Rides');
   }
 
 
@@ -57,22 +63,23 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
                 GestureDetector(
                   onTap: () async {
                     //write here what saves this item in mycart
-                    bool isItemInCart = false;
-                    await dbRef1.orderByChild('key').equalTo(rides['key']).once().then((DatabaseEvent event) {
-                      DataSnapshot snapshot = event.snapshot;
-                      Map<dynamic, dynamic>? cartItem = snapshot.value as Map<dynamic, dynamic>?;
+                    final User? user = _auth.currentUser;
+                    // await dbRef1.orderByChild('key').equalTo(rides['key']).once().then((DatabaseEvent event) {
+                    //   DataSnapshot snapshot = event.snapshot;
+                    //   Map<dynamic, dynamic>? cartItem = snapshot.value as Map<dynamic, dynamic>?;
+                    //   dbRef1.push().set(rides);
+                    // });
+                    if (user != null) {
+                      uemail = user.email;
+                      // Data to update in the 'users' field of the specific ride
+                      Map<String, dynamic> userData = {
+                        'email': uemail,   // Replace with the actual name
+                        'status': 'pending',  // Replace with the actual status
+                      };
 
-                      if (cartItem != null) {
-                        // Item with the same key already exists in the Cart
-                        isItemInCart = true;
-                      } else {
-                        // Item with the same key does not exist in the Cart
-                        isItemInCart = false;
-                        // Push the selected ride to the 'Cart'
-                        dbRef1.push().set(rides);
-                      }
-                    });
-
+                      // Update the 'users' field of the specific ride
+                      ridesreference.child(rides['key']).child('users').push().set(userData);
+                    }
                   },
                   child: Row(
                     children: [

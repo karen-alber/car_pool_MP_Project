@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'OrderDetailsPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 
-
 class MyCartPage extends StatefulWidget {
   const MyCartPage({Key? key}) : super(key: key);
+
   @override
   State<MyCartPage> createState() => _MyCartPageState();
 }
 
 class _MyCartPageState extends State<MyCartPage> {
-  Query dbRef = FirebaseDatabase.instance.ref().child('Cart');
-  DatabaseReference reference = FirebaseDatabase.instance.ref().child('Cart');
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  DatabaseReference reference = FirebaseDatabase.instance.reference().child('Rides');
 
   TextEditingController namecontroller = TextEditingController();
   TextEditingController fromcontroller = TextEditingController();
@@ -20,10 +22,7 @@ class _MyCartPageState extends State<MyCartPage> {
   TextEditingController numcontroller = TextEditingController();
   TextEditingController timecontroller = TextEditingController();
 
-
-  // ?? ''
-
-  Widget listItem({required Map cart}) {
+  Widget listItem({required Map rides}) {
     return Card(
       child: Container(
         margin: const EdgeInsets.all(10),
@@ -35,14 +34,14 @@ class _MyCartPageState extends State<MyCartPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'From: ' + (cart['from']),
+              'From: ' + (rides['from']),
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             ),
             const SizedBox(
               height: 5,
             ),
             Text(
-              'To: ' + (cart['to']),
+              'To: ' + (rides['to']),
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             ),
             Row(
@@ -51,20 +50,20 @@ class _MyCartPageState extends State<MyCartPage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    namecontroller.text = cart['drivername'].toString();
-                    fromcontroller.text = cart['from'].toString();
-                    tocontroller.text = cart['to'].toString();
-                    numcontroller.text = cart['num'].toString();
-                    timecontroller.text = cart['time'].toString();
+                    namecontroller.text = rides['drivername'].toString();
+                    fromcontroller.text = rides['from'].toString();
+                    tocontroller.text = rides['to'].toString();
+                    numcontroller.text = rides['num'].toString();
+                    timecontroller.text = rides['time'].toString();
 
-                    Navigator.pushNamed(context,
-                        '/userOrderDetailsPage',arguments: {
-                          'Name':namecontroller.text, 'Num': numcontroller.text,'From': fromcontroller.text,
-                          'To': tocontroller.text, 'Time': timecontroller.text,});
-
+                    Navigator.pushNamed(context, '/userOrderDetailsPage', arguments: {
+                      'Name': namecontroller.text,
+                      'Num': numcontroller.text,
+                      'From': fromcontroller.text,
+                      'To': tocontroller.text,
+                      'Time': timecontroller.text,
+                    });
                   },
-
-
                   child: Row(
                     children: [
                       Icon(
@@ -79,7 +78,7 @@ class _MyCartPageState extends State<MyCartPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    reference.child(cart['key']).remove();
+                    reference.child(rides['key']).remove();
                   },
                   child: Row(
                     children: [
@@ -100,25 +99,38 @@ class _MyCartPageState extends State<MyCartPage> {
 
   @override
   Widget build(BuildContext context) {
+    final User? user = _auth.currentUser;
+
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.deepPurple,
-          title: const Text("My Cart", style: TextStyle(color: Colors.white)),
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        title: const Text("My Cart", style: TextStyle(color: Colors.white)),
+      ),
+      body: Container(
+        height: double.infinity,
+        child: FirebaseAnimatedList(
+          query: reference,
+          itemBuilder: (BuildContext context, DataSnapshot snapshot, Animation<double> animation, int index) {
+            Map rides = snapshot.value as Map;
+            rides['key'] = snapshot.key;
+
+            // Check if the user's email exists in the 'users' section of the ride
+            bool isUserInRide = (rides['users'] as Map?)?.values.any((userData) =>
+            userData is Map &&
+                userData.containsKey('email') &&
+                userData['email'] == user?.email
+            ) ?? false;
+
+            if (isUserInRide) {
+              return listItem(rides: rides);
+            } else {
+              // Return an empty container if the user's email doesn't match
+              return Container();
+            }
+          },
         ),
-        body: Container(
-          height: double.infinity,
-          child: FirebaseAnimatedList(
-            query: dbRef,
-            itemBuilder: (BuildContext context, DataSnapshot snapshot, Animation<double> animation, int index) {
-
-              Map cart = snapshot.value as Map;
-              cart['key'] = snapshot.key;
-
-              return listItem(cart: cart);
-
-            },
-          ),
-        )
+      ),
     );
   }
+
 }

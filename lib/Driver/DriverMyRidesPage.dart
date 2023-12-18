@@ -3,6 +3,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'RideUsersAppliedPage.dart';
+
 class DriverMyRidesPage extends StatefulWidget {
   const DriverMyRidesPage({Key? key}) : super(key: key);
 
@@ -11,6 +13,7 @@ class DriverMyRidesPage extends StatefulWidget {
 }
 
 class _DriverMyRidesPageState extends State<DriverMyRidesPage> {
+  DatabaseReference referenceRides = FirebaseDatabase.instance.ref().child('Rides');
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String? uemail;
 
@@ -18,23 +21,18 @@ class _DriverMyRidesPageState extends State<DriverMyRidesPage> {
   void initState() {
     super.initState();
     getCurrentUserRides();
-    setState() {};
+    setState(() {});
   }
 
   Future<List<Map<String, dynamic>>> getCurrentUserRides() async {
-    DatabaseReference referenceRides = FirebaseDatabase.instance.ref().child('Rides');
     final User? user = _auth.currentUser;
     List<Map<String, dynamic>> userRides = [];
 
     if (user != null) {
       uemail = user.email;
-      print(uemail);
-
       DataSnapshot snapshot = (await referenceRides.once()).snapshot;
-
       if (snapshot.value != null) {
         Map<dynamic, dynamic> ridesData = (snapshot.value as Map<dynamic, dynamic>) ?? {};
-
         ridesData.forEach((key, value) {
           if (value is Map<dynamic, dynamic>) {
             Map<String, dynamic> ride = {...value, 'key': key.toString()};
@@ -59,7 +57,7 @@ class _DriverMyRidesPageState extends State<DriverMyRidesPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: const Text("Rides", style: TextStyle(color: Colors.white)),
+        title: const Text("My Rides", style: TextStyle(color: Colors.white)),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: getCurrentUserRides(),
@@ -76,7 +74,21 @@ class _DriverMyRidesPageState extends State<DriverMyRidesPage> {
             return ListView.builder(
               itemCount: userRides.length,
               itemBuilder: (context, index) {
-                return listItem(ride: userRides[index]);
+                return GestureDetector(
+                  onTap: () {
+                    // Extract and print the value of the "key" attribute
+                    String key = userRides[index]['key'];
+                    print('Card tapped! Key: $key');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RideUsersAppliedPage(pageKey: key),
+                      ),
+                    );
+
+                  },
+                  child: listItem(ride: userRides[index]),
+                );
               },
             );
           }
@@ -119,7 +131,8 @@ class _DriverMyRidesPageState extends State<DriverMyRidesPage> {
                 GestureDetector(
                   onTap: () {
                     // Add your logic for deleting the ride
-                    //reference.child(ride['key']).remove();
+                      referenceRides.child(ride['key']).remove();
+                      setState(() {});
                   },
                   child: Row(
                     children: [
