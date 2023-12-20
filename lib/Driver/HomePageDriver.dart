@@ -1,8 +1,10 @@
+import 'package:car_pool/Driver/DriverProfilePage.dart';
 import 'package:car_pool/LogoutPage.dart';
 import 'package:flutter/material.dart';
 import 'DriverRidesPage.dart';
 import 'DriverMyRidesPage.dart';
 import 'DriverHistoryPage.dart';
+import 'DriverProfilePage.dart';
 
 class HomePageDriver extends StatefulWidget {
   const HomePageDriver({super.key});
@@ -17,6 +19,7 @@ class _HomePageDriverState extends State<HomePageDriver> {
     DriverRidesPage(),
     DriverMyRidesPage(),
     DriverHistoryPage(),
+    DriverProfilePage(),
     LogoutPage(),
   ];
 
@@ -54,6 +57,10 @@ class _HomePageDriverState extends State<HomePageDriver> {
               ),BottomNavigationBarItem(
                 icon: Icon(Icons.history),
                 label: 'History',
+                backgroundColor: Colors.deepPurple,
+              ),BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Profile',
                 backgroundColor: Colors.deepPurple,
               ),BottomNavigationBarItem(
                 icon: Icon(Icons.logout),

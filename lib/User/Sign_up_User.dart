@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'HomePageUser.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:car_pool/database_helper.dart';
 
 
 class Sign_up_User extends StatefulWidget {
@@ -23,9 +24,22 @@ class _Sign_up_UserState extends State<Sign_up_User> {
   bool loading = false;
   late DatabaseReference dbRef;
 
+  mydatabaseclass mydb = mydatabaseclass();
+  List<Map> mylist = [];
+
+  Future Reading_Database() async {
+    List<Map> response = await mydb.reading('''SELECT * FROM 'TABLE' ''');
+    mylist = [];
+    mylist.addAll(response);
+    setState(() {});
+  }
+
+
   @override
   void initState(){
+    Reading_Database();
     super.initState();
+    mydb.checking();
     dbRef = FirebaseDatabase.instance.ref().child('Users');
   }
 
@@ -118,7 +132,7 @@ class _Sign_up_UserState extends State<Sign_up_User> {
               ),
               ElevatedButton(
                   style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
-                    onPressed: (){
+                    onPressed: () async{
                        if (mykey.currentState!.validate()) {
                          Map<String, String> Users = {
                            'name': namecontroller.text,
@@ -126,6 +140,13 @@ class _Sign_up_UserState extends State<Sign_up_User> {
                            'password': passwordcontroller.text,
                          };
                          dbRef.push().set(Users);
+                         setState(() {});
+
+                         await mydb.writing('''INSERT INTO 'TABLE' 
+          ('EMAIL', 'NAME', 'PASSWORD', 'TYPE') VALUES ("${emailcontroller.text}","${namecontroller.text}","${passwordcontroller.text}","User") ''');
+                         Reading_Database();
+                         setState(() {});
+
                          final auth = FirebaseAuth.instance;
                          auth.createUserWithEmailAndPassword(email: emailcontroller.text, password: passwordcontroller.text).then((value){
                            Navigator.pushReplacement(context,

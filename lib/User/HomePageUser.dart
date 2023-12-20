@@ -1,7 +1,7 @@
 import 'package:car_pool/LogoutPage.dart';
 import 'package:flutter/material.dart';
 import 'MyCartPage.dart';
-import 'ProfilePage.dart';
+import 'UserProfilePage.dart';
 import 'UserHistoryPage.dart';
 import 'AvailableRidesPage.dart';
 
@@ -19,7 +19,7 @@ class _HomePageUserState extends State<HomePageUser> {
     AvailableRidesPage(),
     MyCartPage(),
     UserHistoryPage(),
-    ProfilePage(),
+    UserProfilePage(),
     LogoutPage(),
   ];
 
