@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'PaymentPage.dart';
+import 'OrderTrackingPage.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({Key? key}) : super(key: key);
@@ -47,6 +48,20 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             Text('Time: ' + (myreceiveddata['Time']),
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
             ),
+            SizedBox(height: 20,),
+            Text('Date: ' + (myreceiveddata['Date']),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            ),
+            SizedBox(height: 50,),
+            ElevatedButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, '/userOrderTrackingPage', arguments: {
+                    'Time': myreceiveddata['Time'],
+                    'Date': myreceiveddata['Date'],
+                    'ridekey': myreceiveddata['key'],
+                  });
+                },
+                child: Text('Check the Ride Status'),),
           ],
         ),
       ),

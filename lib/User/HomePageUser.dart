@@ -2,7 +2,7 @@ import 'package:car_pool/LogoutPage.dart';
 import 'package:flutter/material.dart';
 import 'MyCartPage.dart';
 import 'ProfilePage.dart';
-import 'HistoryPage.dart';
+import 'UserHistoryPage.dart';
 import 'AvailableRidesPage.dart';
 
 
@@ -18,7 +18,7 @@ class _HomePageUserState extends State<HomePageUser> {
   final List<Widget> _screens= [
     AvailableRidesPage(),
     MyCartPage(),
-    HistoryPage(),
+    UserHistoryPage(),
     ProfilePage(),
     LogoutPage(),
   ];

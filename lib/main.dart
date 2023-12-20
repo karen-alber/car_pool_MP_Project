@@ -4,7 +4,7 @@ import 'User/Sign_in_User.dart';
 import 'User/Sign_up_User.dart';
 import 'WelcomePage.dart';
 import 'User/MyCartPage.dart';
-import 'User/HistoryPage.dart';
+import 'User/UserHistoryPage.dart';
 import 'User/OrderDetailsPage.dart';
 import 'User/OrderTrackingPage.dart';
 import 'User/PaymentPage.dart';
@@ -20,6 +20,8 @@ import 'Driver/DriverRidesPage.dart';
 import 'Driver/DriverRideChoicePage.dart';
 import 'Driver/AddReturnRidePage.dart';
 import 'Driver/DriverMyRidesPage.dart';
+import 'Driver/ListOfAcceptedUsers.dart';
+import 'Driver/DriverHistoryPage.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,7 +43,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "CarPooling App",
-      home: WelcomePage(),
+      home: HomePageUser(),
       //const WelcomePage(),
       routes: {
         '/welcomePage': (context) => const WelcomePage(),
@@ -49,10 +51,10 @@ class MyApp extends StatelessWidget {
 
         '/userHomePageUser': (context) => const HomePageUser(),
         '/userMyCartPage': (context) => const MyCartPage(),
-        '/userHistoryPage': (context) => const HistoryPage(),
+        '/userUserHistoryPage': (context) => const UserHistoryPage(),
         '/userOrderDetailsPage': (context) =>  const OrderDetailsPage(),
         '/userPaymentPage': (context) => const PaymentPage(),
-        //'/userOrderTrackingPage': (context) => const OrderTrackingPage(),
+        '/userOrderTrackingPage': (context) => const OrderTrackingPage(),
         '/userSign_in_User': (context) => const Sign_in_User(),
         '/userSign_up_User': (context) => const Sign_up_User(),
         '/userProfile': (context) => const ProfilePage(),
@@ -67,6 +69,8 @@ class MyApp extends StatelessWidget {
         '/driverDriverRideChoicePage': (context) => const DriverRideChoicePage(),
         '/driverDriverRidesPage': (context) => const DriverRidesPage(),
         '/driverDriverMyRidesPage': (context) => const DriverMyRidesPage(),
+        '/driverDriverHistoryPage': (context) => const DriverHistoryPage(),
+        //'/listOfAcceptedUsers': (context) => const ListOfAcceptedUsers(),
 
       },
     );
