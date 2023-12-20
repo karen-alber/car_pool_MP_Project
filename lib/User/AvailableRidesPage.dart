@@ -77,19 +77,20 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
                       String rideTime = (await rideref.child('time').once()).snapshot.value.toString();
 
                       // Check additional conditions
-                      if (rideTime == "5:30 pm" && formattedCurrentDate.compareTo(rideDate) == 0) {
-                        if (currentTime.compareTo("13:00:00") < 0) {
+                      if (rideTime == "5:30 pm") {
+                        if (formattedCurrentDate.compareTo(rideDate) == 0 && currentTime.compareTo("13:00:00") < 0 ||
+                            formattedCurrentDate.compareTo(rideDate) < 0) {
                           // Data to update in the 'users' field of the specific ride
                           Map<String, dynamic> userData = {
                             'email': uemail,
                             'status': 'pending',
                           };
-
                           // Update the 'users' field of the specific ride
                           ridesreference.child(key).child('users').push().set(userData);
                         }
-                      } else if (rideTime == "7:30 am" && formattedCurrentDate.compareTo(rideDate) < 0) {
-                        if (currentTime.compareTo("22:00:00") < 0) {
+                      }
+                      else if (rideTime == "7:30 am") {
+                        if (formattedCurrentDate.compareTo(rideDate) < 0 && currentTime.compareTo("22:00:00") < 0) {
                           // Data to update in the 'users' field of the specific ride
                           Map<String, dynamic> userData = {
                             'email': uemail,
@@ -141,8 +142,8 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
         String rideTime = ride['time'];
         String rideDate = ride['date'];
 
-        print(rideTime);
-        print(rideDate);
+        //print(rideTime);
+        //print(rideDate);
         if (rideDate.compareTo(currentDate) < 0) {
           if(rideTime == "5:30 pm" && currentTime.compareTo('17:30:00') <= 0){
             // Move ride to history

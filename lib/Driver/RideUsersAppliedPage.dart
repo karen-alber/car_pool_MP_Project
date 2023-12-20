@@ -112,10 +112,9 @@ class _RideUsersAppliedPageState extends State<RideUsersAppliedPage> {
                             // print("Comparing currentTime: $currentTime with rideTime: $rideTime");
 
                             // Check additional conditions
-                            if (rideTime == "5:30 pm" && formattedCurrentDate.compareTo(rideDate) == 0) {
-                              print("entered 5:30");
-                              if (currentTime.compareTo("16:30:00") < 0) {
-                                print("passed");
+                            if (rideTime == "5:30 pm") {
+                              if (formattedCurrentDate.compareTo(rideDate) == 0 && currentTime.compareTo("16:30:00") < 0||
+                                  formattedCurrentDate.compareTo(rideDate) < 0) {
                                 // Additional conditions met, proceed with the update
                                 if (userEntry != null) {
                                   // Update the status to "Rejected"
@@ -126,10 +125,8 @@ class _RideUsersAppliedPageState extends State<RideUsersAppliedPage> {
                                 }
                               }
                             }
-                            else if (rideTime == "7:30 am" && formattedCurrentDate.compareTo(rideDate) < 0) {
-                              print("entered 7:30");
-                              if (currentTime.compareTo("23:30:00") < 0) {
-                                print("passed");
+                            else if (rideTime == "7:30 am") {
+                              if (formattedCurrentDate.compareTo(rideDate) < 0 && currentTime.compareTo("23:30:00") < 0) {
                                 // Additional conditions met, proceed with the update
                                 if (userEntry != null) {
                                   // Update the status to "Rejected"
