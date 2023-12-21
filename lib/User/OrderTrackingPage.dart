@@ -140,13 +140,11 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
                     usersRef.child(userKey).update(statusUpdate);
                     setState(() {});
                   }
-                  else
-                  if (formattedCurrentDate.compareTo(myReceivedData['Date']) ==
-                      0 &&
+                  else if (formattedCurrentDate.compareTo(myReceivedData['Date']) == 0 &&
                       currentTime.compareTo("7:30:00") < 0) {
                     // Set the status in the database to "Refused"
                     Map<String, String> statusUpdate = {
-                      'status': "Refused",
+                      'status': "Auto Rejected",
                     };
                     usersRef.child(userKey).update(statusUpdate);
                   }

@@ -167,8 +167,9 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
       await driver.delete();
     }
 
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const WelcomePage()));
+    Navigator.pushReplacementNamed(context, '/welcomePage');
+    // Navigator.pushReplacement(context,
+    //     MaterialPageRoute(builder: (context) => const WelcomePage()));
     // Close the profile page after deletion
   }
 

@@ -39,12 +39,11 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "CarPooling App",
-      home: WelcomePage(),
+      home: HomePageUser(),
       //const WelcomePage(),
       routes: {
         '/welcomePage': (context) => const WelcomePage(),

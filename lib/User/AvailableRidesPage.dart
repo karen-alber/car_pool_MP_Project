@@ -16,6 +16,7 @@ class AvailableRidesPage extends StatefulWidget {
 }
 
 class _AvailableRidesPageState extends State<AvailableRidesPage> {
+  static bool bypass = false;
   Query dbRef = FirebaseDatabase.instance.ref().child('Rides');
   DatabaseReference reference = FirebaseDatabase.instance.ref();
   DatabaseReference ridesreference = FirebaseDatabase.instance.ref().child('Rides');
@@ -78,8 +79,9 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
 
                       // Check additional conditions
                       if (rideTime == "5:30 pm") {
-                        if (formattedCurrentDate.compareTo(rideDate) == 0 && currentTime.compareTo("13:00:00") < 0 ||
-                            formattedCurrentDate.compareTo(rideDate) < 0) {
+                        if ((formattedCurrentDate.compareTo(rideDate) == 0 && currentTime.compareTo("13:00:00") < 0 && bypass == false)||
+                            (formattedCurrentDate.compareTo(rideDate) < 0 && bypass == false)||
+                              bypass == true) {
                           // Data to update in the 'users' field of the specific ride
                           Map<String, dynamic> userData = {
                             'email': uemail,
@@ -90,7 +92,8 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
                         }
                       }
                       else if (rideTime == "7:30 am") {
-                        if (formattedCurrentDate.compareTo(rideDate) < 0 && currentTime.compareTo("22:00:00") < 0) {
+                        if ((formattedCurrentDate.compareTo(rideDate) < 0 && currentTime.compareTo("22:00:00") < 0 && bypass == false ) ||
+                            bypass == true) {
                           // Data to update in the 'users' field of the specific ride
                           Map<String, dynamic> userData = {
                             'email': uemail,
@@ -115,8 +118,23 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
                     ],
                   ),
                 ),
+                SizedBox(width: 15,),
+                GestureDetector(
+                  onTap: (){
+                    bypass = true;
+                    ForceMoveRidesToHistory(rides['key']);
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.history,
+                        color: Colors.deepPurple[700],
+                      ),
+                    ],
+                  ),
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -169,6 +187,28 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
     }
   }
 
+  Future<void> ForceMoveRidesToHistory(String rideKey) async {
+    DatabaseEvent event = await dbRef.once();
+    DataSnapshot snapshot = event.snapshot;
+    if (snapshot.value == null) {
+      return;
+    }
+    Map<dynamic, dynamic>? ridesData = snapshot.value as Map<dynamic, dynamic>?;
+    if (ridesData != null) {
+      // Check if the selected ride key matches the current iteration key
+      ridesData.forEach((key, ride) async {
+        if (bypass == true && key == rideKey) {
+          // Move ride to history
+          await historyreference.child(key).set(ride);
+          print('Moved ride $key to History');
+          // Delete ride from Rides
+          await ridesreference.child(key).remove();
+          print('Removed ride $key from Rides');
+        }
+      });
+    }
+  }
+
   @override
   void initState(){
     super.initState();
@@ -188,20 +228,43 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
         ),
         body: Container(
           height: double.infinity,
-          child: FirebaseAnimatedList(
-            query: dbRef,
-            itemBuilder: (BuildContext context, DataSnapshot snapshot, Animation<double> animation, int index) {
-
-              Map rides = snapshot.value as Map;
-              rides['key'] = snapshot.key;
-
-              return listItem(rides: rides);
-
-            },
+          child: Column(
+            children: [
+              Expanded(
+                child: FirebaseAnimatedList(
+                  query: dbRef,
+                  itemBuilder: (BuildContext context, DataSnapshot snapshot, Animation<double> animation, int index) {
+                
+                    Map rides = snapshot.value as Map;
+                    rides['key'] = snapshot.key;
+                
+                    return listItem(rides: rides);
+                  },
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      onPressed: (){
+                        bypass = true;
+                        print("bypass value: $bypass");
+                      },
+                      child: Text("Assign by pass true")),
+                  ElevatedButton(
+                      onPressed: (){
+                        bypass = false;
+                        print("bypass value: $bypass");
+                      },
+                      child: Text("Assign by pass false")),
+                ],
+              ),
+            ],
           ),
-        )
+        ),
     );
   }
+
 
   void showSnackBar(String message, Color backgroundColor) {
     ScaffoldMessenger.of(context).showSnackBar(

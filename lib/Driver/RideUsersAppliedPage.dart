@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 
 class RideUsersAppliedPage extends StatefulWidget {
   final String pageKey;
-
   RideUsersAppliedPage({Key? key, required this.pageKey}) : super(key: key);
 
   @override
@@ -15,6 +14,7 @@ class RideUsersAppliedPage extends StatefulWidget {
 }
 
 class _RideUsersAppliedPageState extends State<RideUsersAppliedPage> {
+  static bool bypass = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   DatabaseReference reference = FirebaseDatabase.instance.ref();
 
@@ -113,8 +113,9 @@ class _RideUsersAppliedPageState extends State<RideUsersAppliedPage> {
 
                             // Check additional conditions
                             if (rideTime == "5:30 pm") {
-                              if (formattedCurrentDate.compareTo(rideDate) == 0 && currentTime.compareTo("16:30:00") < 0||
-                                  formattedCurrentDate.compareTo(rideDate) < 0) {
+                              if ((formattedCurrentDate.compareTo(rideDate) == 0 && currentTime.compareTo("16:30:00") < 0 && bypass == false) ||
+                                  (formattedCurrentDate.compareTo(rideDate) < 0 && bypass == false) ||
+                                   bypass == true) {
                                 // Additional conditions met, proceed with the update
                                 if (userEntry != null) {
                                   // Update the status to "Rejected"
@@ -126,7 +127,8 @@ class _RideUsersAppliedPageState extends State<RideUsersAppliedPage> {
                               }
                             }
                             else if (rideTime == "7:30 am") {
-                              if (formattedCurrentDate.compareTo(rideDate) < 0 && currentTime.compareTo("23:30:00") < 0) {
+                              if ((formattedCurrentDate.compareTo(rideDate) < 0 && currentTime.compareTo("23:30:00") < 0 && bypass == false)||
+                                  bypass == true) {
                                 // Additional conditions met, proceed with the update
                                 if (userEntry != null) {
                                   // Update the status to "Rejected"
@@ -178,7 +180,24 @@ class _RideUsersAppliedPageState extends State<RideUsersAppliedPage> {
                 );
               },
 
-              child: Text('List of Accepted Users'))
+              child: Text('List of Accepted Users')),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                  onPressed: (){
+                    bypass = true;
+                    print("bypass value: $bypass");
+                  },
+                  child: Text("Assign by pass true")),
+              ElevatedButton(
+                  onPressed: (){
+                    bypass = false;
+                    print("bypass value: $bypass");
+                  },
+                  child: Text("Assign by pass false")),
+            ],
+          ),
         ],
       ),
     );
