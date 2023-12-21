@@ -32,7 +32,7 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
       child: Container(
         margin: const EdgeInsets.all(10),
         padding: const EdgeInsets.all(10),
-        height: 124,
+        height: 130,
         color: Colors.grey[200],
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -51,6 +51,10 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
             ),
             const SizedBox(
               height: 5,
+            ),
+            Text(
+              'Date: ' + (rides['date']?? '') + ', Time: ' + (rides['time']?? ''),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
