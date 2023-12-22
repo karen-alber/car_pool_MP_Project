@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "CarPooling App",
-      home: HomePageUser(),
+      home: WelcomePage(),
       //const WelcomePage(),
       routes: {
         '/welcomePage': (context) => const WelcomePage(),

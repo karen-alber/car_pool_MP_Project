@@ -29,13 +29,6 @@ class _PaymentPageState extends State<PaymentPage> {
             const SizedBox(
               height: 20,
             ),
-            ElevatedButton(
-                style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
-                onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/userOrderDetailsPage');
-                },
-                child: const Text("Go Back", style: TextStyle(color: Colors.white)),
-            ),
             const SizedBox(
               height: 50,
             ),
@@ -84,7 +77,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
                 onPressed: () {
                   if (mykey.currentState!.validate()) {
-                    Navigator.pushReplacementNamed(context, '/userOrderDetailsPage');
+                    //do nothing
                   }
                 },
                 child: const Text("Pay", style: TextStyle(color: Colors.white)),

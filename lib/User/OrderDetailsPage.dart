@@ -62,6 +62,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   });
                 },
                 child: Text('Check the Ride Status'),),
+            SizedBox(height: 20,),
+            ElevatedButton(
+              onPressed: (){
+                Navigator.pushNamed(context, '/userPaymentPage');
+              },
+              child: Text('Pay for this ride'),),
           ],
         ),
       ),

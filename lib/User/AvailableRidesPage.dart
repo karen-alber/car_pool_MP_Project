@@ -94,6 +94,10 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
                           // Update the 'users' field of the specific ride
                           ridesreference.child(key).child('users').push().set(userData);
                         }
+                        else {
+                          // Main conditions not met, show snackbar
+                          showSnackBar("You can't add this ride anymore.", Colors.red);
+                        }
                       }
                       else if (rideTime == "7:30 am") {
                         if ((formattedCurrentDate.compareTo(rideDate) < 0 && currentTime.compareTo("22:00:00") < 0 && bypass == false ) ||
@@ -107,9 +111,10 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
                           // Update the 'users' field of the specific ride
                           ridesreference.child(key).child('users').push().set(userData);
                         }
-                      } else {
-                        // Main conditions not met, show snackbar
-                        showSnackBar("You can't add this ride anymore.", Colors.red);
+                        else {
+                          // Main conditions not met, show snackbar
+                          showSnackBar("You can't add this ride anymore.", Colors.red);
+                        }
                       }
                     }
                   },
@@ -164,10 +169,19 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
         String rideTime = ride['time'];
         String rideDate = ride['date'];
 
-        //print(rideTime);
-        //print(rideDate);
-        if (rideDate.compareTo(currentDate) < 0) {
-          if(rideTime == "5:30 pm" && currentTime.compareTo('17:30:00') <= 0){
+        if (rideTime == "5:30 pm") {
+          if(rideDate.compareTo(currentDate) == 0 && currentTime.compareTo('17:30:00') >= 0 ||
+              rideDate.compareTo(currentDate) < 0){
+            // Move ride to history
+            await historyreference.child(key).set(ride);
+            print('Moved ride $key to History');
+            // Delete ride from Rides
+            await ridesreference.child(key).remove();
+            print('Removed ride $key from Rides');
+          }}
+          else if(rideTime == "7:30 am"){
+            if(rideDate.compareTo(currentDate) == 0 && currentTime.compareTo('7:30:00') >= 0||
+                rideDate.compareTo(currentDate) < 0){
             // Move ride to history
             await historyreference.child(key).set(ride);
             print('Moved ride $key to History');
@@ -175,18 +189,11 @@ class _AvailableRidesPageState extends State<AvailableRidesPage> {
             await ridesreference.child(key).remove();
             print('Removed ride $key from Rides');
           }
-          else if(rideTime == "7:30 am" && currentTime.compareTo('7:30:00') <= 0){
-            // Move ride to history
-            await historyreference.child(key).set(ride);
-            print('Moved ride $key to History');
-            // Delete ride from Rides
-            await ridesreference.child(key).remove();
-            print('Removed ride $key from Rides');
-          }
+         }
           else {
             print('Skipped ride $key');
           }
-        }
+
       });
     }
   }

@@ -82,61 +82,68 @@ class _Sign_in_DriverState extends State<Sign_in_Driver> {
             ElevatedButton(
                 style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.deepPurple)),
               onPressed: () {
-                final auth = FirebaseAuth.instance;
-                final email = emailcontroller.text;
-                final password = passwordcontroller.text;
+               final auth = FirebaseAuth.instance;
+               final email = emailcontroller.text;
+               final password = passwordcontroller.text;
+               if (mykey.currentState!.validate()) {
+                 // Attempt to sign in with email and password
+                 auth.signInWithEmailAndPassword(
+                     email: email, password: password).then((value) {
+                   // Authentication successful, now check the database
+                   DatabaseReference driversReference = FirebaseDatabase
+                       .instance.ref().child('Drivers');
+                   driversReference
+                       .orderByChild('email')
+                       .equalTo(email)
+                       .once()
+                       .then((DatabaseEvent event) {
+                     DataSnapshot snapshot = event.snapshot;
 
-                // Attempt to sign in with email and password
-                auth.signInWithEmailAndPassword(email: email, password: password).then((value) {
-                  // Authentication successful, now check the database
-                  DatabaseReference driversReference = FirebaseDatabase.instance.ref().child('Drivers');
-                  driversReference
-                      .orderByChild('email')
-                      .equalTo(email)
-                      .once()
-                      .then((DatabaseEvent event) {
-                    DataSnapshot snapshot = event.snapshot;
+                     // Check if the snapshot value is not null and is of type Map
+                     if (snapshot.value != null && snapshot.value is Map) {
+                       // Cast the snapshot value to Map<dynamic, dynamic>
+                       Map<dynamic, dynamic> driversData = snapshot
+                           .value as Map<dynamic, dynamic>;
 
-                    // Check if the snapshot value is not null and is of type Map
-                    if (snapshot.value != null && snapshot.value is Map) {
-                      // Cast the snapshot value to Map<dynamic, dynamic>
-                      Map<dynamic, dynamic> driversData = snapshot.value as Map<dynamic, dynamic>;
+                       bool isdriverFound = false;
 
-                      bool isdriverFound = false;
+                       // Iterate over each driver to find a match for email and password
+                       driversData.forEach((key, driver) {
+                         if (driver is Map && driver['password'] == password) {
+                           isdriverFound = true;
+                         }
+                       });
 
-                      // Iterate over each driver to find a match for email and password
-                      driversData.forEach((key, driver) {
-                        if (driver is Map && driver['password'] == password) {
-                          isdriverFound = true;
-                        }
-                      });
-
-                      if (isdriverFound) {
-                        // Email and password match found, navigate to the home page
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const HomePageDriver()),
-                        );
-                      } else {
-                        // No matching email and password found
-                        print("Invalid email or password");
-                        showSnackBar("Invalid email or password", Colors.red);
-                      }
-                    }else {
-                      // Handle the case where the snapshot value is null or not of type Map
-                      print("Invalid data structure received from Firebase");
-                      showSnackBar("Error fetching data from the database", Colors.red);
-                    }
-                  }).onError((error, stackTrace) {
-                    // Handle errors in the database query
-                    print("Database query error: $error");
-                    showSnackBar("Error querying the database", Colors.red);
-                  });
-                }).onError((error, stackTrace) {
-                  // Authentication sign-in error
-                  print("Sign-in error: $error");
-                  showSnackBar("No matching email and password found", Colors.red);
-                });
+                       if (isdriverFound) {
+                         // Email and password match found, navigate to the home page
+                         Navigator.pushReplacement(
+                           context,
+                           MaterialPageRoute(
+                               builder: (context) => const HomePageDriver()),
+                         );
+                       } else {
+                         // No matching email and password found
+                         print("Invalid email or password");
+                         showSnackBar("Invalid email or password", Colors.red);
+                       }
+                     } else {
+                       // Handle the case where the snapshot value is null or not of type Map
+                       print("Invalid data structure received from Firebase");
+                       showSnackBar(
+                           "Error fetching data from the database", Colors.red);
+                     }
+                   }).onError((error, stackTrace) {
+                     // Handle errors in the database query
+                     print("Database query error: $error");
+                     showSnackBar("Error querying the database", Colors.red);
+                   });
+                 }).onError((error, stackTrace) {
+                   // Authentication sign-in error
+                   print("Sign-in error: $error");
+                   showSnackBar(
+                       "No matching email and password found", Colors.red);
+                 });
+               }
               },
 
                 child: const Text("Sign in", style: TextStyle(color: Colors.white)),

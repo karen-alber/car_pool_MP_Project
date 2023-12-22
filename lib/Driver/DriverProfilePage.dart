@@ -206,7 +206,7 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: Text("Profile Page"),
+        title: Text("Profile Page", style: TextStyle(color: Colors.white)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

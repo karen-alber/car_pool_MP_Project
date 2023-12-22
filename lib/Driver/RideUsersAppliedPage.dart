@@ -107,10 +107,6 @@ class _RideUsersAppliedPageState extends State<RideUsersAppliedPage> {
                             String rideDate = (await rideref.child('date').once()).snapshot.value.toString();
                             String rideTime = (await rideref.child('time').once()).snapshot.value.toString();
 
-
-                            // print("Comparing formattedCurrentDate: $formattedCurrentDate with rideDate: $rideDate & $rideTime");
-                            // print("Comparing currentTime: $currentTime with rideTime: $rideTime");
-
                             // Check additional conditions
                             if (rideTime == "5:30 pm") {
                               if ((formattedCurrentDate.compareTo(rideDate) == 0 && currentTime.compareTo("16:30:00") < 0 && bypass == false) ||
@@ -125,6 +121,10 @@ class _RideUsersAppliedPageState extends State<RideUsersAppliedPage> {
                                   await fetchUserEmails();
                                 }
                               }
+                              else {
+                                // Main conditions not met, show snackbar
+                                showSnackBar("You can't accept any users anymore.", Colors.red);
+                              }
                             }
                             else if (rideTime == "7:30 am") {
                               if ((formattedCurrentDate.compareTo(rideDate) < 0 && currentTime.compareTo("23:30:00") < 0 && bypass == false)||
@@ -138,10 +138,10 @@ class _RideUsersAppliedPageState extends State<RideUsersAppliedPage> {
                                   await fetchUserEmails();
                                 }
                               }
-                            }
-                            else {
-                              // Main conditions not met, show snackbar
-                              showSnackBar("You can't accept any users anymore.", Colors.red);
+                              else {
+                                // Main conditions not met, show snackbar
+                                showSnackBar("You can't accept any users anymore.", Colors.red);
+                              }
                             }
                           },
                           child: Text('Accept'),

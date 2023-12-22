@@ -109,9 +109,6 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
                 String? userStatus = currentUserDataEntry
                     .value['status'] as String?;
 
-                // print(myReceivedData['Time']);
-                // print(myReceivedData['Date']);
-
                 // Check conditions for "5:30"
                 if (myReceivedData['Time'] == "5:30 pm" &&
                     userStatus == "pending") {
@@ -130,8 +127,7 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
                 }
                 else if (myReceivedData['Time'] == "7:30 am" &&
                     userStatus == "pending") {
-                  if (formattedCurrentDate.compareTo(myReceivedData['Date']) <
-                      0 &&
+                  if (formattedCurrentDate.compareTo(myReceivedData['Date']) < 0 &&
                       currentTime.compareTo("21:00:00") > 0) {
                     // Set the status in the database to "Refused"
                     Map<String, String> statusUpdate = {

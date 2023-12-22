@@ -91,13 +91,6 @@ class _DriverHistoryPageState extends State<DriverHistoryPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'From: ' + (ride['date'] ?? ''),
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Text(
               'From: ' + (ride['from'] ?? ''),
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             ),
@@ -106,6 +99,13 @@ class _DriverHistoryPageState extends State<DriverHistoryPage> {
             ),
             Text(
               'To: ' + (ride['to'] ?? ''),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Text(
+              'Date: ' + (ride['date'] ?? ''),
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             ),
           ],

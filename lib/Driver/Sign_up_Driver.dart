@@ -110,11 +110,11 @@ class _Sign_up_DriverState extends State<Sign_up_Driver> {
                           if(passNonNullValue.isEmpty){
                             return ("Password is required");
                           }
-                          else if(passNonNullValue.length<6){
-                            return ("Password Must be more than 5 characters");
+                          else if(passNonNullValue.length<8){
+                            return ("Password Must be more than 8 characters");
                           }
                           else if(!regex.hasMatch(passNonNullValue)){
-                            return ("Password should contain lower characters and digits");
+                            return ("Try using lower characters and digits");
                           }
                           return null;
                         },
@@ -148,8 +148,7 @@ class _Sign_up_DriverState extends State<Sign_up_Driver> {
 
                         final auth = FirebaseAuth.instance;
                         auth.createUserWithEmailAndPassword(email: emailcontroller.text, password: passwordcontroller.text).then((value){
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (context) => const HomePageDriver()));
+                          Navigator.pushReplacementNamed(context, '/driverHomePageDriver');
                         }).onError((error, stackTrace){
                           print("Error ${error.toString()}");
                         });

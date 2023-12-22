@@ -80,10 +80,10 @@ class _Sign_in_UserState extends State<Sign_in_User> {
                   backgroundColor:
                   MaterialStatePropertyAll(Colors.deepPurple)),
               onPressed: () {
-                final auth = FirebaseAuth.instance;
-                final email = emailcontroller.text;
-                final password = passwordcontroller.text;
-
+               final auth = FirebaseAuth.instance;
+               final email = emailcontroller.text;
+               final password = passwordcontroller.text;
+               if (mykey.currentState!.validate()){
                 // Attempt to sign in with email and password
                 auth.signInWithEmailAndPassword(email: email, password: password).then((value) {
                   // Authentication successful, now check the database
@@ -99,7 +99,6 @@ class _Sign_in_UserState extends State<Sign_in_User> {
                     if (snapshot.value != null && snapshot.value is Map) {
                       // Cast the snapshot value to Map<dynamic, dynamic>
                       Map<dynamic, dynamic> usersData = snapshot.value as Map<dynamic, dynamic>;
-
                       bool isUserFound = false;
 
                       // Iterate over each user to find a match for email and password
@@ -115,7 +114,8 @@ class _Sign_in_UserState extends State<Sign_in_User> {
                           context,
                           MaterialPageRoute(builder: (context) => const HomePageUser()),
                         );
-                      } else {
+                      }
+                    else {
                         // No matching email and password found
                         print("Invalid email or password");
                         showSnackBar("Invalid email or password", Colors.red);
@@ -135,6 +135,7 @@ class _Sign_in_UserState extends State<Sign_in_User> {
                   print("Sign-in error: $error");
                   showSnackBar("No matching email and password found", Colors.red);
                 });
+               }
               },
 
 
