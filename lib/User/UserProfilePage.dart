@@ -196,8 +196,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     }
 
     Navigator.pushReplacementNamed(context, '/welcomePage');
-    // Navigator.pushReplacement(context,
-    //     MaterialPageRoute(builder: (context) => const WelcomePage()));
+    //Navigator.pop(context,'/WelcomePage');
    // Close the profile page after deletion
   }
 
