@@ -147,6 +147,7 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
                       'status': "Auto Rejected",
                     };
                     usersRef.child(userKey).update(statusUpdate);
+                    setState(() {});
                   }
                   print("User Status from 7:30 condition: $userStatus");
                   return userStatus;

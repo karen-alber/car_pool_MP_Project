@@ -18,6 +18,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
   List<Map> mylist = [];
   String? uemail;
   late DatabaseReference dbRef;
+  static String? uname;
+  static String? upass;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -28,6 +30,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
     getCurrentUser();
     Reading_Database();
     dbRef = FirebaseDatabase.instance.ref().child('Users');
+    setState(() {
+      getOldData();
+    });
   }
 
   Future Reading_Database() async {
@@ -73,6 +78,29 @@ class _UserProfilePageState extends State<UserProfilePage> {
             };
             // Remove the user with the matching email
             dbRef.child(key).update(nameUpdate);
+            setState(() {});
+          }
+        });
+      }
+    }
+  }
+
+  Future<void> getOldData() async {
+
+    DatabaseEvent snapshot = await dbRef.once(); // Use DatabaseEvent
+    // Check if the snapshot has data
+    if (snapshot.snapshot.value != null) {
+      // Perform null check before converting to Map
+      if (snapshot.snapshot.value is Map<dynamic, dynamic>) {
+        Map<String, dynamic> users =
+        Map<String, dynamic>.from(snapshot.snapshot.value as Map<dynamic, dynamic>);
+
+        // Iterate through the keys in users
+        users.forEach((key, userData) {
+          // Check if the email matches the current user's email
+          if (userData['email'] == uemail) {
+            uname = userData['name'];
+            upass = userData['password'];
             setState(() {});
           }
         });
@@ -186,27 +214,33 @@ class _UserProfilePageState extends State<UserProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Email: $uemail'),
-            SizedBox(height: 16),
+            SizedBox(height: 32),
+            Text('Current Name: $uname'),
             buildEditableTextField("Name", nameController, updateName),
-            SizedBox(height: 16),
+            SizedBox(height: 32),
+            Text('Current Password: $upass'),
             buildEditableTextField("Password", passwordController, updatePassword),
             SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: deleteAccount,
-              child: Text("Delete Account"),
+            Center(
+              child: ElevatedButton(
+                onPressed: deleteAccount,
+                child: Text("Delete Account"),
+              ),
             ),
-            SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () async{
-                List<Map<String, dynamic>> databaseData = await PrintingDatabase();
-                print("SQLite Database Data:");
-                for (var data in databaseData) {
-                  data.forEach((key, value) {
-                    print("$key: $value");
-                  });
-                }
-              },
-              child: Text("Print mydb in console"),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: () async{
+                  List<Map<String, dynamic>> databaseData = await PrintingDatabase();
+                  print("SQLite Database Data:");
+                  for (var data in databaseData) {
+                    data.forEach((key, value) {
+                      print("$key: $value");
+                    });
+                  }
+                },
+                child: Text("Print mydb in console"),
+              ),
             ),
 
           ],
